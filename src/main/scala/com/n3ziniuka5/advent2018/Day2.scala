@@ -11,27 +11,11 @@ object Day2 {
   }
 
   def charCountMap(ids: String): Map[Char, Int] = {
-    @tailrec
-    def loop(accum: Map[Char, Int], current: Char, remaining: List[Char]): Map[Char, Int] = {
-      val newAccum = if(accum.contains(current)) {
-        accum
-      } else {
-        val count = remaining.count(_ == current) + 1
-        accum + (current -> count)
-      }
-
-      remaining match {
-        case head :: tail => loop(newAccum, head, tail)
-        case Nil => accum
-      }
-    }
-
-    val charList = ids.toCharArray.toList
-    loop(Map.empty, charList.head, charList.tail)
+    ids.groupBy(identity).mapValues(_.length)
   }
 
-  def containsChars(countMap: Map[Char, Int], numChars: Int): Boolean = {
-    countMap.exists(_._2 == numChars)
+  def containsCharsWithCertainCount(countMap: Map[Char, Int], count: Int): Boolean = {
+    countMap.exists(_._2 == count)
   }
 
   def removeCharAt(str: String, pos: Int): String = {
@@ -61,14 +45,15 @@ object Day2 {
   }
 
   def solvePart1(ids: List[String]): Int = {
-    val charCounts = ids.map(charCountMap)
-    val contains2 = charCounts.count(containsChars(_, 2))
-    val contains3 = charCounts.count(containsChars(_, 3))
+    val charCountList = ids.map(charCountMap)
+    val contains2 = charCountList.count(containsCharsWithCertainCount(_, 2))
+    val contains3 = charCountList.count(containsCharsWithCertainCount(_, 3))
 
     contains2 * contains3
   }
 
   def solvePart2(ids: List[String]): Option[String] = {
+    @tailrec
     def loop(currentString: String, remaining: List[String]): Option[String] = {
       val commonStringOpt = remaining
         .toStream
@@ -77,12 +62,10 @@ object Day2 {
           case a if a.isDefined => a.get
         }
 
-      commonStringOpt.fold {
-        remaining match {
-          case head :: tail => loop(head, tail)
-          case Nil => None
-        }
-      }(Some(_))
+      remaining match {
+        case head :: tail if commonStringOpt.isEmpty => loop(head, tail)
+        case _ => commonStringOpt
+      }
     }
 
     loop(ids.head, ids.tail)
