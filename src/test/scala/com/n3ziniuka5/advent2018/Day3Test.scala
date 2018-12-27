@@ -17,23 +17,19 @@ class Day3Test extends FunSpec {
     }
   }
 
+
+  val testInput = List(
+    "#1 @ 1,3: 4x4",
+    "#2 @ 3,1: 4x4",
+    "#3 @ 5,5: 2x2",
+  )
   it("part1") {
     val expected = 4
-    val input = List(
-      "#1 @ 1,3: 4x4",
-      "#2 @ 3,1: 4x4",
-      "#3 @ 5,5: 2x2",
-    )
-    assert(Day3.solvePart1(input) == expected)
+    assert(Day3.solvePart1(testInput) == expected)
   }
 
   it("part2") {
     val expected = 3
-    val input = List(
-      "#1 @ 1,3: 4x4",
-      "#2 @ 3,1: 4x4",
-      "#3 @ 5,5: 2x2",
-    )
-    assert(Day3.solvePart2(input) == expected)
+    assert(Day3.solvePart2(testInput) == expected)
   }
 }
